@@ -397,12 +397,6 @@ static int ought_to_be_interrupted, interrupt_notified;
 static void
 alarm_triggered (int sig)
 {
-  (void) sig;
-  assert (sig == SIGALRM);
-  assert (time_limit_in_seconds);
-  assert (!ought_to_be_interrupted);
-  ought_to_be_interrupted = 1;
-  assert (!interrupt_notified);
 }
 
 static int
@@ -429,18 +423,11 @@ interrupt_call_back (void * dummy)
 static void
 setalarm ()
 {
-  assert (time_limit_in_seconds > 0);
-  sig_alarm_handler = signal (SIGALRM, alarm_triggered);
-  alarm (time_limit_in_seconds);
-  assert (picosat);
-  picosat_set_interrupt (picosat, 0, interrupt_call_back);
 }
 
 static void
 resetalarm ()
 {
-  assert (time_limit_in_seconds > 0);
-  (void) signal (SIGALRM, sig_term_handler);
 }
 
 static void
