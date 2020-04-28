@@ -4,4 +4,12 @@ project(PicoSAT VERSION 965)
 
 set(CMAKE_C_FLAGS "-DNALLSIGNALS -DNGETRUSAGE")
 
-add_executable(picosat config.h picosat.h app.c main.c picosat.c version.c)
+set(CommonSources config.h picosat.h picosat.c version.c)
+
+add_executable(picosat ${CommonSources} app.c main.c)
+
+add_executable(picomus ${CommonSources} picomus.c)
+
+add_executable(picomcs ${CommonSources} picomcs.c)
+
+add_executable(picogcnf ${CommonSources} picogcnf.c)
