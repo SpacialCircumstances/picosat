@@ -1120,7 +1120,7 @@ new_prefix(PS *ps, const char *str) {
     strcpy(ps->prefix, str);
 }
 
-static clock_t start_ts = 0;
+static clock_t picosat_start_ts = 0;
 
 static PS *
 init(void *pmgr,
@@ -1232,7 +1232,7 @@ init(void *pmgr,
     ps->state = READY;
     ps->last_sat_call_result = 0;
 
-    start_ts = clock();
+    picosat_start_ts = clock();
 
     return ps;
 }
@@ -7600,7 +7600,7 @@ picosat_stats(PS *ps) {
 double
 picosat_time_stamp(void) {
     clock_t curr = clock();
-    clock_t elapsed = curr - start_ts;
+    clock_t elapsed = curr - picosat_start_ts;
     return (double)(elapsed / CLOCKS_PER_SEC);
 }
 
