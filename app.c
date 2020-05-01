@@ -8,6 +8,13 @@
 #include <string.h>
 #include <unistd.h>
 
+#ifdef PLWIN
+#define _MT
+
+#include <windows.h>
+
+#endif
+
 #define GUNZIP "gunzip -c %s"
 #define BUNZIP2 "bzcat %s"
 #define GZIP "gzip -c -f > %s"
@@ -30,6 +37,10 @@ static char *bhead = buffer;
 static const char *eob = buffer + 80;
 static FILE *incremental_rup_file;
 static signed char *sol;
+
+#ifdef PLWIN
+static HANDLE win_timer;
+#endif
 
 extern void picosat_enter(PicoSAT *);
 
@@ -362,6 +373,10 @@ static int ought_to_be_interrupted, interrupt_notified;
 static void
 alarm_triggered(int sig) {
 #ifdef PLWIN
+    (void) sig;
+    assert(time_limit_in_seconds);
+    ought_to_be_interrupted = 1;
+    assert(!interrupt_notified);
 #else
     (void) sig;
     assert(sig == SIGALRM);
@@ -390,9 +405,36 @@ interrupt_call_back(void *dummy) {
     return 1;
 }
 
+#ifdef PLWIN
+
+VOID CALLBACK timer_callback(
+        _In_ PVOID lpParameter,
+        _In_ BOOLEAN TimerOrWaitFired
+) {
+    sig_alarm_handler = signal(SIGTERM, alarm_triggered);
+    alarm_triggered(0);
+    raise(SIGTERM);
+    (void) signal(SIGTERM, sig_term_handler);
+}
+
+unsigned int alarm(int seconds) {
+    assert(seconds > 0);
+    int due = seconds * 1000;
+    int result = CreateTimerQueueTimer(&win_timer, NULL, (WAITORTIMERCALLBACK) timer_callback, NULL, due, 0, 0);
+    assert(result != 0);
+    assert(win_timer != 0);
+    return 0;
+}
+
+#endif
+
 static void
 setalarm() {
 #ifdef PLWIN
+    assert(time_limit_in_seconds > 0);
+    alarm(time_limit_in_seconds);
+    assert(picosat);
+    picosat_set_interrupt(picosat, 0, interrupt_call_back);
 #else
     assert (time_limit_in_seconds > 0);
     sig_alarm_handler = signal (SIGALRM, alarm_triggered);
@@ -405,6 +447,8 @@ setalarm() {
 static void
 resetalarm() {
 #ifdef PLWIN
+    assert(time_limit_in_seconds > 0);
+    DeleteTimerQueueTimer(NULL, win_timer, NULL);
 #else
     assert(time_limit_in_seconds > 0);
     (void) signal (SIGALRM, sig_term_handler);
