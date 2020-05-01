@@ -2,7 +2,12 @@ cmake_minimum_required(VERSION 3.10)
 
 project(PicoSAT VERSION 965)
 
-set(CMAKE_C_FLAGS "-DNALLSIGNALS -DNGETRUSAGE")
+if(UNIX)
+    set(CMAKE_C_FLAGS "-DNALLSIGNALS -DNGETRUSAGE")
+endif()
+if(WIN32)
+    set(CMAKE_C_FLAGS "-DNALLSIGNALS -DNGETRUSAGE -DPLWIN")
+endif()
 
 set(CommonSources config.h picosat.h picosat.c version.c)
 
