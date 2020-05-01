@@ -407,10 +407,7 @@ resetalarm() {
 #ifdef PLWIN
 #else
     assert(time_limit_in_seconds > 0);
-    sig_alarm_handler = signal (SIGALRM, alarm_triggered);
-    alarm (time_limit_in_seconds);
-    assert (picosat);
-    picosat_set_interrupt (picosat, 0, interrupt_call_back);
+    (void) signal (SIGALRM, sig_term_handler);
 #endif
 }
 
