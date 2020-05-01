@@ -28,6 +28,7 @@ IN THE SOFTWARE.
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdint.h>
+#include <time.h>
 
 #include "picosat.h"
 
@@ -1119,6 +1120,8 @@ new_prefix(PS *ps, const char *str) {
     strcpy(ps->prefix, str);
 }
 
+static clock_t start_ts = 0;
+
 static PS *
 init(void *pmgr,
      picosat_malloc pnew, picosat_realloc presize, picosat_free pdelete) {
@@ -1228,6 +1231,8 @@ init(void *pmgr,
     ps->defaultphase = JWLPHASE;
     ps->state = READY;
     ps->last_sat_call_result = 0;
+
+    start_ts = clock();
 
     return ps;
 }
@@ -7594,17 +7599,9 @@ picosat_stats(PS *ps) {
 
 double
 picosat_time_stamp(void) {
-    double res = -1;
-#ifndef NGETRUSAGE
-                                                                                                                            struct rusage u;
-  res = 0;
-  if (!getrusage (RUSAGE_SELF, &u))
-    {
-      res += u.ru_utime.tv_sec + 1e-6 * u.ru_utime.tv_usec;
-      res += u.ru_stime.tv_sec + 1e-6 * u.ru_stime.tv_usec;
-    }
-#endif
-    return res;
+    clock_t curr = clock();
+    clock_t elapsed = curr - start_ts;
+    return (double)(elapsed / CLOCKS_PER_SEC);
 }
 
 double
