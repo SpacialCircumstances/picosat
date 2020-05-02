@@ -2,13 +2,13 @@ cmake_minimum_required(VERSION 3.10)
 
 project(PicoSAT VERSION 965)
 
-if(UNIX)
-    set(CMAKE_C_FLAGS "-DNALLSIGNALS -DNGETRUSAGE")
-endif()
+set(CompilerFlags "-DNALLSIGNALS -DNGETRUSAGE")
+
 if(WIN32)
-    set(CMAKE_C_FLAGS "-DNALLSIGNALS -DNGETRUSAGE -DPLWIN")
+    set(CompilerFlags "${CompilerFlags} -DPLWIN")
 endif()
 
+set(CMAKE_C_FLAGS ${CompilerFlags})
 set(CommonSources config.h picosat.h picosat.c version.c)
 
 add_executable(picosat ${CommonSources} app.c main.c)
