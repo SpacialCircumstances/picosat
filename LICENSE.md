@@ -1,3 +1,11 @@
+Changes made to PicoSAT:
+
+Copyright (c) 2020, Felix Nolte
+
+And, like the original source code, licensed under the MIT License, which can be found below.
+
+License of original PicoSAT software:
+
 Copyright (c) 2006 - 2014, Armin Biere, Johannes Kepler University.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
