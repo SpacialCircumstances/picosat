@@ -38,6 +38,8 @@ endif()
 set(CMAKE_C_FLAGS ${CompilerFlags})
 set(CommonSources config.h picosat.h picosat.c version.c)
 
+link_libraries("-static")
+
 add_executable(picosat ${CommonSources} app.c main.c)
 
 add_executable(picomus ${CommonSources} picomus.c)
