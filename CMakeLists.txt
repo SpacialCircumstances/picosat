@@ -44,6 +44,7 @@ link_libraries("-static")
 if (SharedLib)
     message("Compiling shared library")
     add_library(picosat SHARED ${CommonSources})
+    install(TARGETS picosat DESTINATION "${CMAKE_INSTALL_PREFIX}/lib")
 else()
     add_executable(picosat ${CommonSources} app.c main.c)
 
@@ -52,4 +53,6 @@ else()
     add_executable(picomcs ${CommonSources} picomcs.c)
 
     add_executable(picogcnf ${CommonSources} picogcnf.c)
+
+    install(TARGETS picosat picomus picomcs picogcnf DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")
 endif()
