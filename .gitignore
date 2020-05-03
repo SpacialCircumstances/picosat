@@ -14,3 +14,4 @@ _deps
 build/
 buildn/
 cmake-build-debug/
+config.h

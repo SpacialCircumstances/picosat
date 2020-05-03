@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(PicoSAT VERSION 965)
+project(PicoSAT VERSION 965.1)
 
 set(CompilerFlags "-DNALLSIGNALS -DNGETRUSAGE")
 
@@ -38,6 +38,8 @@ endif()
 
 set(CMAKE_C_FLAGS ${CompilerFlags})
 set(CommonSources config.h picosat.h picosat.c version.c)
+
+configure_file(config.h.in "${CMAKE_CURRENT_SOURCE_DIR}/config.h")
 
 link_libraries("-static")
 
