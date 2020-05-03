@@ -7,6 +7,7 @@ set(CompilerFlags "-DNALLSIGNALS -DNGETRUSAGE")
 option(Logging "More logging" OFF)
 option(Trace "Trace support" OFF)
 option(Stats "More stats" OFF)
+option(SharedLib "Shared library" OFF)
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
     message("Compiling in debug mode. For release mode, pass -DCMAKE_BUILD_TYPE=Release to CMake.")
@@ -40,10 +41,15 @@ set(CommonSources config.h picosat.h picosat.c version.c)
 
 link_libraries("-static")
 
-add_executable(picosat ${CommonSources} app.c main.c)
+if (SharedLib)
+    message("Compiling shared library")
+    add_library(picosat SHARED ${CommonSources})
+else()
+    add_executable(picosat ${CommonSources} app.c main.c)
 
-add_executable(picomus ${CommonSources} picomus.c)
+    add_executable(picomus ${CommonSources} picomus.c)
 
-add_executable(picomcs ${CommonSources} picomcs.c)
+    add_executable(picomcs ${CommonSources} picomcs.c)
 
-add_executable(picogcnf ${CommonSources} picogcnf.c)
+    add_executable(picogcnf ${CommonSources} picogcnf.c)
+endif()
